@@ -22,7 +22,18 @@ defmodule EQC.Mocking do
   """
   require Record
 
-  Record.defrecord :api_spec, Record.extract(:api_spec, from_lib: "eqc/include/eqc_mocking_api.hrl")
-  Record.defrecord :api_module, Record.extract(:api_module, from_lib: "eqc/include/eqc_mocking_api.hrl")
-  Record.defrecord :api_fun, Record.extract(:api_fun, from_lib: "eqc/include/eqc_mocking_api.hrl")
+  # checking if eqc_mini
+  Application.load :eqc
+  is_eqc_mini = Application.loaded_applications
+  |> Enum.any? fn
+    {:eqc, 'Quviq QuickCheck Mini', _ver} -> true
+    _ -> false
+  end
+
+  unless is_eqc_mini do
+    Record.defrecord :api_spec, Record.extract(:api_spec, from_lib: "eqc/include/eqc_mocking_api.hrl")
+    Record.defrecord :api_module, Record.extract(:api_module, from_lib: "eqc/include/eqc_mocking_api.hrl")
+    Record.defrecord :api_fun, Record.extract(:api_fun, from_lib: "eqc/include/eqc_mocking_api.hrl")
+  end
+
 end
